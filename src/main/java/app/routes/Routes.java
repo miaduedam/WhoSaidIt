@@ -28,6 +28,7 @@ public final class Routes {
       //  this.quoteController = quoteController;
 
 
+    public Routes() {}
     // Entry point for registering all routes
     public EndpointGroup getRoutes() {
         return () -> {
