@@ -1,7 +1,7 @@
 package app.exceptions;
 
 /**
- * Purpose of this class is to make an Exception with a HTTP status code
+ * Purpose of this class is to make an Exception with an HTTP status code
  * Author: Thomas Hartmann
  */
 public class ApiException extends RuntimeException {

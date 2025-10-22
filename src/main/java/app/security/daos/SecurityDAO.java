@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  */
 public class SecurityDAO implements ISecurityDAO {
 
-    private static ISecurityDAO instance;
     private static EntityManagerFactory emf;
 
     public SecurityDAO(EntityManagerFactory _emf) {
@@ -68,7 +67,7 @@ public class SecurityDAO implements ISecurityDAO {
     }
 
     @Override
-    public User addRole(UserDTO userDTO, String newRole) throws EntityNotFoundException {
+    public User addRole(UserDTO userDTO, String newRole) {
         try (EntityManager em = getEntityManager()) {
             User user = em.find(User.class, userDTO.getUsername());
             if (user == null)
@@ -83,6 +82,8 @@ public class SecurityDAO implements ISecurityDAO {
             //em.merge(user);
             em.getTransaction().commit();
             return user;
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

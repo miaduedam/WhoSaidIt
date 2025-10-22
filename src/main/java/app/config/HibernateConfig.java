@@ -1,6 +1,7 @@
 package app.config;
 
 
+import app.exceptions.ApiException;
 import app.utils.Utils;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
@@ -92,7 +93,7 @@ public class HibernateConfig {
         return props;
     }
 
-    private static Properties setDevProperties(Properties props) {
+    private static Properties setDevProperties(Properties props) throws ApiException {
         String DBName = Utils.getPropertyValue("DB_NAME", "config.properties");
         props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/" + DBName);
         props.put("hibernate.connection.username", "postgres");
