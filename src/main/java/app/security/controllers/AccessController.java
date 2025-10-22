@@ -1,11 +1,12 @@
 package app.security.controllers;
 
-import app.security.controllers.IAccessController;
-import app.security.controllers.SecurityController;
+
 import dk.bugelhartmann.UserDTO;
 import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
 import io.javalin.security.RouteRole;
+import app.security.enums.Role;
+
 
 import java.util.Set;
 
@@ -22,6 +23,8 @@ public class AccessController implements IAccessController {
      * This method checks if the user has the necessary roles to access the route.
      * @param ctx
      */
+
+    @Override
     public void accessHandler(Context ctx) {
 
         // If no roles are specified on the endpoint, then anyone can access the route
@@ -45,4 +48,6 @@ public class AccessController implements IAccessController {
             throw new UnauthorizedResponse("Unauthorized with roles: " + user.getRoles() + ". Needed roles are: " + allowedRoles);
         }
     }
+
+
 }

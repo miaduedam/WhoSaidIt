@@ -1,20 +1,17 @@
-package dat.security.daos;
+package app.security.daos;
 
 
-import app.security.daos.ISecurityDAO;
-import dat.security.entities.Role;
-import dat.security.entities.User;
-import dat.security.exceptions.ApiException;
-import dat.security.exceptions.ValidationException;
+import app.exceptions.ApiException;
+import app.exceptions.EntityNotFoundException;
+import app.exceptions.ValidationException;
+import app.security.entities.User;
+import app.security.entities.Role;
 import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityNotFoundException;
 
-import java.util.Set;
 import java.util.stream.Collectors;
-
 
 /**
  * Purpose: To handle security in the API
@@ -42,7 +39,9 @@ public class SecurityDAO implements ISecurityDAO {
             user.getRoles().size(); // force roles to be fetched from db
             if (!user.verifyPassword(password))
                 throw new ValidationException("Wrong password");
-            return new UserDTO(user.getUsername(), user.getRoles().stream().map(r -> r.getRoleName()).collect(Collectors.toSet()));
+            return new UserDTO(user.getUsername(), String.valueOf(user.getRoles().stream().map(r -> r.getRoleName()).collect(Collectors.toSet())));
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -69,7 +68,7 @@ public class SecurityDAO implements ISecurityDAO {
     }
 
     @Override
-    public User addRole(UserDTO userDTO, String newRole) {
+    public User addRole(UserDTO userDTO, String newRole) throws EntityNotFoundException {
         try (EntityManager em = getEntityManager()) {
             User user = em.find(User.class, userDTO.getUsername());
             if (user == null)
