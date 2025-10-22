@@ -10,17 +10,25 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String apiKey = System.getenv("API_NINJAS_KEY");
-        if (apiKey == null) {
-            throw new IllegalStateException("Set API_NINJAS_KEY environment variable!");
-        }
-
-        String password = System.getenv("db_password");
-        String dbHost = System.getenv("db_host");
-        String dbPort = "5432";
-        String dbName = "sp2";
 
 
+
+
+
+
+
+
+
+
+//        String apiKey = System.getenv("API_NINJAS_KEY");
+//        if (apiKey == null) {
+//            throw new IllegalStateException("Set API_NINJAS_KEY environment variable!");
+//        }
+//
+//        String password = System.getenv("db_password");
+//        String dbHost = System.getenv("db_host");
+//        String dbPort = "5432";
+//        String dbName = "sp2";
 
 
 //        try (Connection connection = DriverManager.getConnection(
