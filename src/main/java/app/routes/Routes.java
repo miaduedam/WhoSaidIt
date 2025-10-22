@@ -32,7 +32,7 @@ public final class Routes {
     public EndpointGroup getRoutes() {
         return () -> {
 
-            get("/", ctx -> ctx.result("Who Said It API is running"));
+           // get("/", ctx -> ctx.result("Who Said It API is running"));
         };
     }
 
