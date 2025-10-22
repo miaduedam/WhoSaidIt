@@ -1,13 +1,5 @@
 package app;
 import app.config.ApplicationConfig;
-import app.controllers.QuoteController;
-import app.daos.PersonDAO;
-import app.daos.QuoteDAO;
-import app.services.QuoteService;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws Exception {

@@ -1,39 +1,35 @@
 package app.controllers;
 
-import app.daos.PersonDAO;
 import app.daos.QuoteDAO;
-import app.dtos.QuoteDTO;
-import app.entities.Person;
 import app.entities.Quote;
-import app.services.QuoteService;
-
+import java.sql.SQLException;
 import java.util.List;
 
 public class QuoteController {
-    private final PersonDAO personDAO;
     private final QuoteDAO quoteDAO;
-    private final QuoteService quoteService;
 
-    public QuoteController(PersonDAO personDAO, QuoteDAO quoteDAO, QuoteService quoteService) {
-        this.personDAO = personDAO;
+    public QuoteController(QuoteDAO quoteDAO) {
         this.quoteDAO = quoteDAO;
-        this.quoteService = quoteService;
     }
 
-    public void fetchAndSaveQuotes(int limit) throws Exception {
-        List<QuoteDTO> quotes = quoteService.fetchQuotes(limit);
+//det her er bare til CRUD
+    public List<Quote> getAllQuotes() throws SQLException {
+        return quoteDAO.getAllQuotes();
+    }
 
-        for (QuoteDTO dto : quotes) {
-            Person person = personDAO.getPersonByName(dto.getAuthor());
-            if (person == null) {
-                person = new Person(dto.getAuthor());
-                personDAO.insertPerson(person);
-            }
+    public Quote getQuoteById(int id) throws SQLException {
+        return quoteDAO.getQuoteById(id);
+    }
 
-            Quote quote = new Quote(dto.getQuote(), person);
-            quoteDAO.insertQuote(quote);
+    public void addQuote(Quote quote) throws SQLException {
+        quoteDAO.insertQuote(quote);
+    }
 
-            System.out.println("Inserted quote: " + quote);
-        }
+    public void updateQuote(Quote quote) throws SQLException {
+        quoteDAO.updateQuote(quote);
+    }
+
+    public void deleteQuote(int id) throws SQLException {
+        quoteDAO.deleteQuote(id);
     }
 }
