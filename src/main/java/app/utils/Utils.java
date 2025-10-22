@@ -1,11 +1,11 @@
 package app.utils;
 
+
 import app.exceptions.ApiException;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import io.javalin.http.Context;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class Utils {
     public static void main(String[] args) {
         System.out.println(getPropertyValue("db.name", "properties-from-pom.properties"));
     }
-    public static String getPropertyValue(String propName, String resourceName)  {
+    public static String getPropertyValue(String propName, String resourceName) throws ApiException {
         // REMEMBER TO BUILD WITH MAVEN FIRST. Read the property file if not deployed (else read system vars instead)
         // Read from ressources/config.properties or from pom.xml depending on the ressourceName
         try (InputStream is = Utils.class.getClassLoader().getResourceAsStream(resourceName)) {

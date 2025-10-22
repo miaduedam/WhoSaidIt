@@ -1,4 +1,5 @@
 package app;
+import app.config.ApplicationConfig;
 import app.controllers.QuoteController;
 import app.daos.PersonDAO;
 import app.daos.QuoteDAO;
@@ -10,6 +11,8 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+
+        ApplicationConfig.startServer(7070);
 
 
 
