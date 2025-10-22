@@ -32,6 +32,8 @@ public final class Routes {
     public EndpointGroup getRoutes() {
         return () -> {
 
+            get("/", ctx -> ctx.result("Who Said It API is running"));
+
             // Example: all quote routes grouped under /quotes
             path("quotes", () -> {
 
