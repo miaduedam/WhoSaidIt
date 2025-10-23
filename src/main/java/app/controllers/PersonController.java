@@ -3,7 +3,7 @@ package app.controllers;
 import app.daos.PersonDAO;
 import app.entities.Person;
 
-import java.sql.SQLException;
+import java.util.List;
 
 public class PersonController {
 
@@ -13,11 +13,31 @@ public class PersonController {
         this.personDAO = personDAO;
     }
 
-    public void addPerson(Person person) throws SQLException {
+    // CREATE
+    public void addPerson(Person person) {
         personDAO.insertPerson(person);
     }
 
-    public Person getPersonByName(String name) throws SQLException {
+    // READ
+    public Person getPersonById(int id) {
+        return personDAO.getPersonById(id);
+    }
+
+    public Person getPersonByName(String name) {
         return personDAO.getPersonByName(name);
+    }
+
+    public List<Person> getAllPersons() {
+        return personDAO.getAllPersons();
+    }
+
+    // UPDATE
+    public void updatePerson(Person person) {
+        personDAO.updatePerson(person);
+    }
+
+    // DELETE
+    public void deletePerson(int id) {
+        personDAO.deletePerson(id);
     }
 }

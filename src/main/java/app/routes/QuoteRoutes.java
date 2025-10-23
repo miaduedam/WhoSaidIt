@@ -1,6 +1,7 @@
 package app.routes;
 
 import app.controllers.QuoteController;
+import app.entities.Quote;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -20,20 +21,26 @@ public class QuoteRoutes {
             get("/", ctx -> ctx.json(quoteController.getAllQuotes()));
 
             // GET /quotes/:id
-            get(":id", ctx -> ctx.json(quoteController.getQuoteById(Integer.parseInt(ctx.pathParam("id")))));
+            get(":id", ctx -> ctx.json(
+                    quoteController.getQuoteById(Integer.parseInt(ctx.pathParam("id")))
+            ));
 
             // POST /quotes
-            post("/", ctx -> quoteController.addQuote(ctx.bodyAsClass(app.entities.Quote.class)));
+            post("/", ctx -> quoteController.addQuote(
+                    ctx.bodyAsClass(Quote.class)
+            ));
 
             // PUT /quotes/:id
             put(":id", ctx -> {
-                var q = ctx.bodyAsClass(app.entities.Quote.class);
+                Quote q = ctx.bodyAsClass(Quote.class);
                 q.setId(Integer.parseInt(ctx.pathParam("id")));
                 quoteController.updateQuote(q);
             });
 
             // DELETE /quotes/:id
-            delete(":id", ctx -> quoteController.deleteQuote(Integer.parseInt(ctx.pathParam("id"))));
+            delete(":id", ctx -> quoteController.deleteQuote(
+                    Integer.parseInt(ctx.pathParam("id"))
+            ));
         };
     }
 }
