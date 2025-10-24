@@ -1,51 +1,47 @@
 package app;
 import app.config.ApplicationConfig;
+import app.config.HibernateConfig;
+import app.daos.PersonDAO;
+import app.daos.QuoteDAO;
+import app.dtos.QuoteDTO;
+import app.entities.Person;
+import app.entities.Quote;
+import app.services.QuoteService;
+import jakarta.persistence.EntityManagerFactory;
+
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
         ApplicationConfig.startServer(7070);
-
-
-
-
-
-
+        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+        QuoteDAO quoteDAO = QuoteDAO.getInstance(emf);
+        PersonDAO personDAO = PersonDAO.getInstance(emf);
 
 
 
 
 //        String apiKey = System.getenv("API_NINJAS_KEY");
-//        if (apiKey == null) {
-//            throw new IllegalStateException("Set API_NINJAS_KEY environment variable!");
+//        if (apiKey == null) throw new IllegalStateException("Set API_NINJAS_KEY environment variable!");
+//        QuoteService quoteService = new QuoteService(apiKey);
+//        List<QuoteDTO> quotes = quoteService.fetchQuotes(50);
+//
+//        for (QuoteDTO dto : quotes) {
+//            // tjekker om personen findes
+//            Person author = personDAO.getPersonByName(dto.getAuthor());
+//            // hvis ikke så laver vi en ny person
+//            if (author == null) {
+//                author = new Person();
+//                author.setName(dto.getAuthor());
+//                personDAO.insertPerson(author);
+//            }
+//            //opretter en quote med personen
+//            Quote quoteEntity = new Quote(dto.getQuote(), author);
+//            quoteDAO.insertQuote(quoteEntity);
 //        }
-//
-//        String password = System.getenv("db_password");
-//        String dbHost = System.getenv("db_host");
-//        String dbPort = "5432";
-//        String dbName = "sp2";
+//        emf.close();
 
-
-//        try (Connection connection = DriverManager.getConnection(
-//                "jdbc:postgresql://" + dbHost + ":" + dbPort + "/" + dbName,
-//                "postgres",
-//                password)) {
-//
-//            PersonDAO personDAO = new PersonDAO(connection);
-//            QuoteDAO quoteDAO = new QuoteDAO(connection);
-//            QuoteService quoteService = new QuoteService(apiKey);
-//            QuoteController controller = new QuoteController(personDAO, quoteDAO, quoteService);
-//
-//            // Fetch 100 quotes and save to DB
-//            controller.fetchAndSaveQuotes(5);
-//
-//        } catch (SQLException e) {
-//            System.err.println("Database error: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            System.err.println("Unexpected error: " + e.getMessage());
-//            e.printStackTrace();
-//        }
 
     }
 }
