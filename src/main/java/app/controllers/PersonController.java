@@ -1,14 +1,22 @@
 package app.controllers;
 
+import app.config.HibernateConfig;
 import app.daos.PersonDAO;
 import app.entities.Person;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 import java.util.List;
 
 public class PersonController {
 
-    private final PersonDAO personDAO = new PersonDAO();
+    private final PersonDAO personDAO;
 
+    // Constructor injection
+    public PersonController() {
+        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+        this.personDAO = PersonDAO.getInstance(emf);
+    }
 
     // CREATE
     public void addPerson(Person person) {
