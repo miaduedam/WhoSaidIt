@@ -1,19 +1,14 @@
 package app.routes;
 
+import app.controllers.QuoteController;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class Routes {
 
-    private final QuoteRoutes quoteRoutes;
-    private final PersonRoutes personRoutes;
-
-    public Routes(QuoteRoutes quoteRoutes, PersonRoutes personRoutes) {
-        this.quoteRoutes = quoteRoutes;
-        this.personRoutes = personRoutes;
-    }
-
+    private final QuoteRoutes quoteRoutes = new QuoteRoutes();
+    private final PersonRoutes personRoutes = new PersonRoutes();
 
     public EndpointGroup getRoutes() {
         return () -> {

@@ -8,11 +8,7 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class QuoteRoutes {
 
-    private final QuoteController quoteController;
-
-    public QuoteRoutes(QuoteController quoteController) {
-        this.quoteController = quoteController;
-    }
+    private final QuoteController quoteController = new QuoteController();
 
     public EndpointGroup getRoutes() {
         return () -> {
@@ -20,25 +16,25 @@ public class QuoteRoutes {
             // GET /quotes
             get("/", ctx -> ctx.json(quoteController.getAllQuotes()));
 
-            // GET /quotes/:id
-            get(":id", ctx -> ctx.json(
+// GET /quotes/{id}
+            get("/{id}", ctx -> ctx.json(
                     quoteController.getQuoteById(Integer.parseInt(ctx.pathParam("id")))
             ));
 
-            // POST /quotes
+// POST /quotes
             post("/", ctx -> quoteController.addQuote(
                     ctx.bodyAsClass(Quote.class)
             ));
 
-            // PUT /quotes/:id
-            put(":id", ctx -> {
+// PUT /quotes/{id}
+            put("/{id}", ctx -> {
                 Quote q = ctx.bodyAsClass(Quote.class);
                 q.setId(Integer.parseInt(ctx.pathParam("id")));
                 quoteController.updateQuote(q);
             });
 
-            // DELETE /quotes/:id
-            delete(":id", ctx -> quoteController.deleteQuote(
+// DELETE /quotes/{id}
+            delete("/{id}", ctx -> quoteController.deleteQuote(
                     Integer.parseInt(ctx.pathParam("id"))
             ));
         };

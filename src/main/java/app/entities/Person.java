@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.dtos.PersonDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "people")
+@Table(name = "persons")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,4 +31,14 @@ public class Person {
     public Person(String name) {
         this.name = name;
     }
+
+    public void addQuote(Quote quote) {
+        quotes.add(quote);
+        quote.setPerson(this);
+    }
+
+    public Person(PersonDTO personDTO) {
+        this.name = personDTO.getAuthor();
+    }
+
 }

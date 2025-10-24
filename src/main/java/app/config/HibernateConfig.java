@@ -102,9 +102,9 @@ public class HibernateConfig {
 
     private static Properties setDevProperties(Properties props) throws ApiException {
         String DBName = Utils.getPropertyValue("DB_NAME", "config.properties");
-        props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/" + DBName);
+        props.put("hibernate.connection.url", "jdbc:postgresql://164.92.143.107/" + DBName);
         props.put("hibernate.connection.username", "postgres");
-        props.put("hibernate.connection.password", "postgres");
+        props.put("hibernate.connection.password", System.getenv("DB_PASSWORD"));
         return props;
     }
 

@@ -7,11 +7,8 @@ import java.util.List;
 
 public class PersonController {
 
-    private final PersonDAO personDAO;
+    private final PersonDAO personDAO = new PersonDAO();
 
-    public PersonController(PersonDAO personDAO) {
-        this.personDAO = personDAO;
-    }
 
     // CREATE
     public void addPerson(Person person) {
