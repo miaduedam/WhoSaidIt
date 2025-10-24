@@ -9,87 +9,73 @@ import java.util.List;
 
 public class PersonDAO {
 
-    private final EntityManagerFactory emf;
+    private static PersonDAO instance;
+    private static EntityManagerFactory emf;
 
-    public PersonDAO(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
 
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public static PersonDAO getInstance(EntityManagerFactory _emf) {
+        if (instance == null) {
+            emf = _emf;
+            instance = new PersonDAO();
+        }
+        return instance;
     }
 
     // Create
     public void insertPerson(Person person) {
-        EntityManager em = getEntityManager();
-        try {
+        try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             em.persist(person);
             em.getTransaction().commit();
-        } finally {
-            em.close();
         }
     }
 
     // Read by ID
     public Person getPersonById(int id) {
-        EntityManager em = getEntityManager();
-        try {
+        try(EntityManager em = emf.createEntityManager()){
             return em.find(Person.class, id);
-        } finally {
-            em.close();
         }
     }
 
     // Read by name
     public Person getPersonByName(String name) {
-        EntityManager em = getEntityManager();
-        try {
+        try(EntityManager em = emf.createEntityManager()){
             TypedQuery<Person> query = em.createQuery(
                     "SELECT p FROM Person p WHERE p.name = :name", Person.class);
             query.setParameter("name", name);
             List<Person> results = query.getResultList();
             return results.isEmpty() ? null : results.get(0);
-        } finally {
-            em.close();
         }
     }
 
     // Update
-    public void updatePerson(Person person) {
-        EntityManager em = getEntityManager();
-        try {
+    public Person updatePerson(Person person) {
+        try(EntityManager em = emf.createEntityManager()){
             em.getTransaction().begin();
-            em.merge(person);
+            Person update = em.merge(person);
             em.getTransaction().commit();
-        } finally {
-            em.close();
+            return update;
         }
     }
 
     // Delete
     public void deletePerson(int id) {
-        EntityManager em = getEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Person person = em.find(Person.class, id);
             if (person != null) {
                 em.remove(person);
             }
             em.getTransaction().commit();
-        } finally {
-            em.close();
         }
     }
 
     // Read all persons
     public List<Person> getAllPersons() {
-        EntityManager em = getEntityManager();
-        try {
-            TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p", Person.class);
-            return query.getResultList();
-        } finally {
-            em.close();
+            try (EntityManager em = emf.createEntityManager()) {
+                TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p", Person.class);
+                return query.getResultList();
+            }
         }
-    }
+
 }

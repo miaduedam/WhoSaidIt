@@ -1,8 +1,10 @@
 package app.controllers;
 
+import app.config.HibernateConfig;
 import app.daos.QuoteDAO;
 import app.entities.Person;
 import app.entities.Quote;
+import jakarta.persistence.EntityManagerFactory;
 
 import java.util.List;
 
@@ -10,8 +12,9 @@ public class QuoteController {
 
     private final QuoteDAO quoteDAO;
 
-    public QuoteController(QuoteDAO quoteDAO) {
-        this.quoteDAO = quoteDAO;
+    public QuoteController() {
+        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+        this.quoteDAO = QuoteDAO.getInstance(emf);
     }
 
     // CREATE

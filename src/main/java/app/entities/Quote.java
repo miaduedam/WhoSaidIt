@@ -1,5 +1,6 @@
 package app.entities;
 
+import app.dtos.QuoteDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +28,10 @@ public class Quote {
     public Quote(String text, Person person) {
         this.text = text;
         this.person = person;
+    }
+
+    public Quote(QuoteDTO quoteDTO) {
+        this.text = quoteDTO.getQuote();
+        this.person = new Person(quoteDTO.getAuthor());
     }
 }

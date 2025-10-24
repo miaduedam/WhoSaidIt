@@ -1,4 +1,8 @@
 package app.config;
+import app.controllers.QuoteController;
+import app.daos.QuoteDAO;
+import app.routes.PersonRoutes;
+import app.routes.QuoteRoutes;
 import app.routes.Routes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import app.exceptions.ApiException;
@@ -22,6 +26,8 @@ public class ApplicationConfig {
     private static Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
     private static int count = 1;
 
+
+    private PersonRoutes personRoutes;
     public static void configuration(JavalinConfig config) {
         config.showJavalinBanner = false;
         config.bundledPlugins.enableRouteOverview("/routes", Role.ANYONE);
