@@ -3,8 +3,6 @@
 ### Test endpoint (no login required)
 GET {{url}}/auth/test
 
-### Populate the database with some data (optional)
-GET {{url}}/hotels/populate
 
 ### Create a new user - will get USER role by default
 POST {{url}}/auth/register
@@ -25,6 +23,8 @@ Content-Type: application/json
 
 ### Get all persons
 GET {{url}}/people
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
 
 ### Get person by id
 GET {{url}}/people/1

@@ -17,7 +17,7 @@ public class Main {
         ApplicationConfig.startServer(7070);
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         QuoteDAO quoteDAO = QuoteDAO.getInstance(emf);
-        PersonDAO personDAO = PersonDAO.getInstance(emf);
+        //PersonDAO personDAO = PersonDAO.getInstance(emf);
 
 
 
