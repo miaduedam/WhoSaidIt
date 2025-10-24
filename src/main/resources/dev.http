@@ -1,19 +1,52 @@
-### A simple get request to the test endpoint. No need for login
-GET {{url}}/auth/test/
+### --- AUTH ENDPOINTS ---
 
-### Populate the database with some data
-GET {{url}}/hotels/populate/
+### Test endpoint (no login required)
+GET {{url}}/auth/test
 
-### Create a new user - this one will only get a USER role by default
-POST {{url}}/auth/register/
+### Populate the database with some data (optional)
+GET {{url}}/hotels/populate
+
+### Create a new user - will get USER role by default
+POST {{url}}/auth/register
+Content-Type: application/json
 
 {
-    "username": "user",
-    "password": "test123"
+  "username": "user",
+  "password": "test123"
 }
-
 
 > {%
     client.global.set("jwt_token", response.body.token);
     console.log("JWT Token:", client.global.get("jwt_token"));
 %}
+
+
+### --- PERSON ENDPOINTS ---
+
+### Get all persons
+GET {{url}}/people
+
+### Get person by id
+GET {{url}}/people/1
+
+### Get person by name
+GET {{url}}/people/search?name=Mia
+
+### Create (add) person
+POST {{url}}/people
+Content-Type: application/json
+
+{
+  "name": "Mia"
+}
+
+### Update person
+PUT {{url}}/people/1
+Content-Type: application/json
+
+{
+  "name": "Updated Mia"
+}
+
+### Delete person
+DELETE {{url}}/people/1
