@@ -6,11 +6,13 @@ import app.daos.QuoteDAO;
 import app.entities.Person;
 import jakarta.persistence.EntityManagerFactory;
 
+
 import java.util.List;
 
 public class PersonController {
 
     private final PersonDAO personDAO;
+
     public PersonController() {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
         this.personDAO = PersonDAO.getInstance(emf);
