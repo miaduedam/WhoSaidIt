@@ -1,4 +1,5 @@
 package app;
+
 import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.controllers.PersonController;
@@ -15,15 +16,19 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        //ApplicationConfig.startServer(7070);
-        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
-        QuoteDAO quoteDAO = QuoteDAO.getInstance(emf);
+        ApplicationConfig.startServer(7070);
+
+
+        // Hold main-tråden i live
+
+//        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+//        QuoteDAO quoteDAO = QuoteDAO.getInstance(emf);
         //PersonDAO personDAO = PersonDAO.getInstance(emf);
 
-        PersonController personController = new PersonController();
-        List<Person> persons = personController.getAllPersons();
-
-        System.out.println(persons.size());
+//        PersonController personController = new PersonController();
+//        List<Person> persons = personController.getAllPersons();
+//
+//        System.out.println(persons.size());
 
 
 

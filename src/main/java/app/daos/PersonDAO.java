@@ -1,6 +1,6 @@
 package app.daos;
 
-import app.config.HibernateConfig;
+import app.dtos.PersonDTO;
 import app.entities.Person;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -23,41 +23,50 @@ public class PersonDAO {
     }
 
     // Create
-    public void insertPerson(Person person) {
+    public PersonDTO createPerson(PersonDTO personDTO) {
         try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
+            Person person = new Person(personDTO);
             em.persist(person);
             em.getTransaction().commit();
+            return new PersonDTO(person);
         }
     }
 
     // Read by ID
-    public Person getPersonById(int id) {
+    public PersonDTO getPersonById(Integer id) {
         try(EntityManager em = emf.createEntityManager()){
-            return em.find(Person.class, id);
+            Person person = em.find(Person.class, id);
+            return new PersonDTO(person);
         }
     }
 
     // Read by name
-    public Person getPersonByName(String name) {
+    public PersonDTO getPersonByName(String name) {
         try(EntityManager em = emf.createEntityManager()){
             TypedQuery<Person> query = em.createQuery(
                     "SELECT p FROM Person p WHERE p.name = :name", Person.class);
             query.setParameter("name", name);
             List<Person> results = query.getResultList();
-            return results.isEmpty() ? null : results.get(0);
+            if (results.isEmpty())
+                return null;
+            return new PersonDTO(results.get(0));
         }
     }
 
     // Update
-    public Person updatePerson(Person person) {
-        try(EntityManager em = emf.createEntityManager()){
+    public PersonDTO updatePerson(Integer integer, PersonDTO personDTO) {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            Person update = em.merge(person);
+            Person person = em.find(Person.class, integer);
+            person.setName(personDTO.getAuthor());
+
+            Person updated = em.merge(person);
             em.getTransaction().commit();
-            return update;
+            return updated != null ? new PersonDTO(updated) : null;
         }
     }
+
 
     // Delete
     public void deletePerson(int id) {
@@ -72,11 +81,19 @@ public class PersonDAO {
     }
 
     // Read all persons
-    public List<Person> getAllPersons() {
+    public List<PersonDTO> getAllPersons() {
             try (EntityManager em = emf.createEntityManager()) {
-                TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p", Person.class);
+                TypedQuery<PersonDTO> query = em.createQuery("SELECT p FROM Person p", PersonDTO.class);
                 return query.getResultList();
             }
         }
+
+    //Validate
+    public boolean validatePrimaryKey(Integer id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            Person person = em.find(Person.class, id);
+            return person != null;
+        }
+    }
 
 }
