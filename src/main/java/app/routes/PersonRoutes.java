@@ -13,23 +13,22 @@ public class PersonRoutes {
     public EndpointGroup getRoutes() {
         return () -> {
 
-
-// GET /people → all persons
+            // GET /people → all persons
             get("/", personController::readAll);
 
-// GET /people/{id} → person by ID
+            // GET /people/{id} → person by ID
             get("/{id}", personController::read);
 
-// GET /people?name=... → person by name
+            // GET /people?name=... → person by name
             get("/search", personController::readByName);
 
-// POST /people → add person
+            // POST /people → add person
             post("/", personController::create);
 
-// PUT /people/{id} → update person
+            // PUT /people/{id} → update person
             put("/{id}", personController::update);
 
-// DELETE /people/{id} → delete person
+            // DELETE /people/{id} → delete person
             delete("/{id}", personController::delete);
 
         };

@@ -14,29 +14,25 @@ public class QuoteRoutes {
         return () -> {
 
             // GET /quotes
-            get("/", ctx -> ctx.json(quoteController.getAllQuotes()));
+            get("/", quoteController::readAll);
 
-// GET /quotes/{id}
-            get("/{id}", ctx -> ctx.json(
-                    quoteController.getQuoteById(Integer.parseInt(ctx.pathParam("id")))
-            ));
+            // GET /quotes/{id}
+            get("/{id}", quoteController::read);
 
-// POST /quotes
-            post("/", ctx -> quoteController.addQuote(
-                    ctx.bodyAsClass(Quote.class)
-            ));
+            // POST /quotes
+            post("/", quoteController::create);
 
-// PUT /quotes/{id}
-            put("/{id}", ctx -> {
-                Quote q = ctx.bodyAsClass(Quote.class);
-                q.setId(Integer.parseInt(ctx.pathParam("id")));
-                quoteController.updateQuote(q);
-            });
+            // PUT /quotes/{id}
+            put("/{id}", quoteController::update);
 
-// DELETE /quotes/{id}
-            delete("/{id}", ctx -> quoteController.deleteQuote(
-                    Integer.parseInt(ctx.pathParam("id"))
-            ));
+            // DELETE /quotes/{id}
+            delete("/{id}", quoteController::delete);
+
+            // GET / quotes/
+            get("/person/{name}", quoteController::readQuotesByPerson);
+
+
+
         };
     }
 }
