@@ -24,7 +24,7 @@ public class Person {
     private String name;
 
     // One person can have many quotes
-    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Quote> quotes = new HashSet<>();
 
     // Keep your convenience constructor

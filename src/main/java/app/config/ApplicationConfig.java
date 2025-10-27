@@ -1,16 +1,13 @@
 package app.config;
-import app.controllers.QuoteController;
-import app.daos.QuoteDAO;
-import app.routes.PersonRoutes;
-import app.routes.QuoteRoutes;
-import app.routes.Routes;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import app.exceptions.ApiException;
+import app.routes.Routes;
 import app.security.controllers.AccessController;
 import app.security.controllers.SecurityController;
 import app.security.enums.Role;
 import app.security.routes.SecurityRoutes;
 import app.utils.Utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.Context;
@@ -26,8 +23,6 @@ public class ApplicationConfig {
     private static Logger logger = LoggerFactory.getLogger(ApplicationConfig.class);
     private static int count = 1;
 
-
-    private PersonRoutes personRoutes;
     public static void configuration(JavalinConfig config) {
         config.showJavalinBanner = false;
         config.bundledPlugins.enableRouteOverview("/routes", Role.ANYONE);
