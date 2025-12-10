@@ -9,6 +9,7 @@ import io.javalin.http.Context;
 import jakarta.persistence.EntityManagerFactory;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonController implements IController{
@@ -23,68 +24,99 @@ public class PersonController implements IController{
     @Override
     public void read(Context ctx) {
         // request
-        int id = ctx.pathParamAsClass("id", Integer.class).check(this::validatePrimaryKey, "Not a valid id").get();
+        int id = ctx.pathParamAsClass("id", Integer.class)
+                .check(this::validatePrimaryKey, "Not a valid id")
+                .get();
+        Person person = personDAO.getPersonById(id);
+        if (person == null) {
+            ctx.status(404).result("Person not found with id: " + id);
+            return;
+        }
         // DTO
-        PersonDTO personDTO = personDAO.getPersonById(id);
+        PersonDTO personDTO = new PersonDTO(person);
         // response
-        ctx.res().setStatus(200);
-        ctx.json(personDTO, PersonDTO.class);
+        ctx.status(200);
+        ctx.json(personDTO);
 
     }
 
     @Override
     public void readAll(Context ctx) {
-        //List of dtos
-        List<PersonDTO> personDTOS = personDAO.getAllPersons();
-        // response
-        ctx.res().setStatus(200);
-        ctx.json(personDTOS, PersonDTO.class);
+
+        List<Person> persons = personDAO.getAllPersons();
+
+        if (persons == null || persons.isEmpty()) {
+            ctx.status(404).result("there is no list of people");
+            return;
+        }
+        // Map entities -> DTOs
+        List<PersonDTO> personDTOS = persons.stream()
+                .map(PersonDTO::new)   // bruger din PersonDTO(Person person)-constructor
+                .toList();
+        ctx.status(200).json(personDTOS);
     }
+
 
     @Override
     public void create(Context ctx) {
-        //Request
+        //Læs request-body som DTO
         PersonDTO jsonRequest = ctx.bodyAsClass(PersonDTO.class);
-        //DTO
-        PersonDTO personDTO = personDAO.createPerson(jsonRequest);
+        //Map DTO -> Entity
+        Person personEntity = new Person(jsonRequest);   // bruger din constructor Person(PersonDTO)
+        //Gem via DAO (arbejder med entiteter)
+        Person created = personDAO.createPerson(personEntity);
+        //Map tilbage til DTO til response
+        PersonDTO responseDTO = new PersonDTO(created);
         //Response
         ctx.res().setStatus(201);
-        ctx.json(personDTO,PersonDTO.class);
-
+        ctx.json(responseDTO);
     }
+
 
     @Override
     public void update(Context ctx) {
-        // request
-        int id = ctx.pathParamAsClass("id", Integer.class).check(this::validatePrimaryKey, "Not a valid id").get();
-        // dto
-        PersonDTO personDTO = personDAO.updatePerson(id, validateEntity(ctx));
-        // response
-        ctx.res().setStatus(200);
-        ctx.json(personDTO, Person.class);
+        int id = ctx.pathParamAsClass("id", Integer.class)
+                .check(this::validatePrimaryKey, "Not a valid id")
+                .get();
+        // Request DTO (valideret)
+        PersonDTO requestDTO = validateEntity(ctx);
+        // DTO -> Entity
+        Person updatedData = new Person(requestDTO);
+        Person updated = personDAO.updatePerson(id, updatedData);
+        if (updated == null) {
+            ctx.status(404).result("Person not found with id: " + id);
+            return;
+        }
+        // Entity -> DTO
+        PersonDTO responseDTO = new PersonDTO(updated);
+        ctx.status(200).json(responseDTO);
     }
 
     @Override
     public void delete(Context ctx) {
         //Request
-        int id = ctx.pathParamAsClass("id", Integer.class).check(this::validatePrimaryKey, "Not a valid id").get();
+        int id = ctx.pathParamAsClass("id", Integer.class)
+                .check(this::validatePrimaryKey, "Not a valid id")
+                .get();
         personDAO.deletePerson(id);
         // response
-        ctx.res().setStatus(204);
+        ctx.status(204);
 
     }
 
     public void readByName(Context ctx){
-        //Request
         String name = ctx.pathParam("name");
-        PersonDTO personDTO = personDAO.getPersonByName(name);
-        //response
-        if (personDTO == null) {
+        Person person = personDAO.getPersonByName(name);
+
+        if (person == null) {
             ctx.status(404).result("No person found with name: " + name);
-        } else {
-            ctx.status(200).json(personDTO);
+            return;
         }
+
+        PersonDTO personDTO = new PersonDTO(person);
+        ctx.status(200).json(personDTO);
     }
+
 
     public boolean validatePrimaryKey(Integer integer) {
         return personDAO.validatePrimaryKey(integer);
