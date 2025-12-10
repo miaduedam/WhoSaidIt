@@ -1,7 +1,4 @@
 package app.daos;
-
-import app.dtos.PersonDTO;
-import app.dtos.QuoteDTO;
 import app.entities.Quote;
 import app.entities.Person;
 import jakarta.persistence.EntityManager;
@@ -13,7 +10,6 @@ public class QuoteDAO {
     private static QuoteDAO instance;
     private static EntityManagerFactory emf;
 
-
     public static QuoteDAO getInstance(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
@@ -22,58 +18,95 @@ public class QuoteDAO {
         return instance;
     }
 
-
     // Create
-    public QuoteDTO createQuote(QuoteDTO quoteDTO) {
-        try(EntityManager em = emf.createEntityManager()) {
+    public Quote createQuote(Quote quote) {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            Quote quote = new Quote(quoteDTO);
+            // Sørg for at person er managed
+            Person person = quote.getPerson();
+            if (person != null && person.getId() != null) {
+                Person managedPerson = em.find(Person.class, person.getId());
+                quote.setPerson(managedPerson);
+            }
             em.persist(quote);
             em.getTransaction().commit();
-            return new QuoteDTO(quote);
+            return quote;
         }
     }
 
-    // Read all quotes
-    public List<QuoteDTO> getAllQuotes() {
+    // Bruges af dit QuoteAPIController
+    public void insertQuote(Quote quote) {
         try (EntityManager em = emf.createEntityManager()) {
-            TypedQuery<QuoteDTO> query = em.createQuery("SELECT q FROM Quote q", QuoteDTO.class);
+            em.getTransaction().begin();
+            Person person = quote.getPerson();
+            if (person != null && person.getId() != null) {
+                Person managedPerson = em.find(Person.class, person.getId());
+                quote.setPerson(managedPerson);
+            }
+            em.persist(quote);
+            em.getTransaction().commit();
+        }
+    }
+
+    // Read all
+    public List<Quote> getAllQuotes() {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Quote> query = em.createQuery("SELECT q FROM Quote q", Quote.class);
             return query.getResultList();
         }
     }
 
     // Read by ID
-    public QuoteDTO getQuoteById(int id) {
-            try(EntityManager em = emf.createEntityManager()){
-                Quote quote = em.find(Quote.class, id);
-                return new QuoteDTO(quote);
-            }
+    public Quote getQuoteById(int id) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return em.find(Quote.class, id);
         }
+    }
 
-    // Read by person
+    // Read by person entity
     public List<Quote> getQuotesByPerson(Person person) {
         try (EntityManager em = emf.createEntityManager()) {
-            try {
-                TypedQuery<Quote> query = em.createQuery(
-                        "SELECT q FROM Quote q WHERE q.person = :person", Quote.class);
-                query.setParameter("person", person);
-                return query.getResultList();
-            } finally {
-                em.close();
+            TypedQuery<Quote> query = em.createQuery(
+                    "SELECT q FROM Quote q WHERE q.person = :person", Quote.class);
+            query.setParameter("person", person);
+            return query.getResultList();
+        }
+    }
+
+    // Read by person name
+    public List<Quote> getQuotesByPersonNameEntity(String name) {
+        try (EntityManager em = emf.createEntityManager()) {
+            Person person = em.createQuery(
+                            "SELECT p FROM Person p WHERE p.name = :name", Person.class)
+                    .setParameter("name", name)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (person == null) {
+                return List.of();
             }
+
+            TypedQuery<Quote> query = em.createQuery(
+                    "SELECT q FROM Quote q WHERE q.person = :person", Quote.class);
+            query.setParameter("person", person);
+            return query.getResultList();
         }
     }
 
     // Update
-    public QuoteDTO updateQuote(Integer integer, QuoteDTO quoteDTO) {
+    public Quote updateQuote(Integer id, Quote updatedData) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            Quote quote = em.find(Quote.class, integer);
-            quote.setText(quoteDTO.getQuote());
-
-            Quote updated = em.merge(quote);
+            Quote existing = em.find(Quote.class, id);
+            if (existing == null) {
+                em.getTransaction().rollback();
+                return null;
+            }
+            existing.setText(updatedData.getText());
+            Quote merged = em.merge(existing);
             em.getTransaction().commit();
-            return updated != null ? new QuoteDTO(updated) : null;
+            return merged;
         }
     }
 
@@ -89,35 +122,6 @@ public class QuoteDAO {
         }
     }
 
-    public List<QuoteDTO> getQuotesByPersonName(String name) {
-        try (EntityManager em = emf.createEntityManager()) {
-            //Find personen
-            Person person = em.createQuery(
-                            "SELECT p FROM Person p WHERE p.name = :name", Person.class)
-                    .setParameter("name", name)
-                    .getResultStream()
-                    .findFirst()
-                    .orElse(null);
-            if (person == null) {
-                throw new IllegalArgumentException("Person not found: " + name);
-            }
-
-            //Hent alle citater for den person
-            TypedQuery<Quote> query = em.createQuery(
-                    "SELECT q FROM Quote q WHERE q.person = :person", Quote.class);
-            query.setParameter("person", person);
-            List<Quote> results = query.getResultList();
-
-            //Map alle entities til DTO’er
-            return results.stream()
-                    .map(QuoteDTO::new)
-                    .toList();
-        }
-    }
-
-
-
-    //Validate
     public boolean validatePrimaryKey(Integer id) {
         try (EntityManager em = emf.createEntityManager()) {
             Quote quote = em.find(Quote.class, id);
