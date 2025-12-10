@@ -22,6 +22,7 @@ public class Quote {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id", nullable = false)
+    @ToString.Exclude
     private Person person;
 
     // Keep your existing convenience constructor
@@ -32,6 +33,6 @@ public class Quote {
 
     public Quote(QuoteDTO quoteDTO) {
         this.text = quoteDTO.getQuote();
-        this.person = new Person(quoteDTO.getAuthor());
     }
+
 }
