@@ -19,5 +19,7 @@ public QuoteDTO(Quote quote){
 
 }
 
+public QuoteDTO(){}
+
 }
 

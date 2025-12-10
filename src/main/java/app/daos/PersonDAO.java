@@ -23,26 +23,24 @@ public class PersonDAO {
     }
 
     // Create
-    public PersonDTO createPerson(PersonDTO personDTO) {
+    public Person createPerson(Person person) {
         try(EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            Person person = new Person(personDTO);
             em.persist(person);
             em.getTransaction().commit();
-            return new PersonDTO(person);
+            return person;
         }
     }
 
     // Read by ID
-    public PersonDTO getPersonById(Integer id) {
+    public Person getPersonById(Integer id) {
         try(EntityManager em = emf.createEntityManager()){
-            Person person = em.find(Person.class, id);
-            return new PersonDTO(person);
+            return em.find(Person.class, id);
         }
     }
 
     // Read by name
-    public PersonDTO getPersonByName(String name) {
+    public Person getPersonByName(String name) {
         try(EntityManager em = emf.createEntityManager()){
             TypedQuery<Person> query = em.createQuery(
                     "SELECT p FROM Person p WHERE p.name = :name", Person.class);
@@ -50,20 +48,28 @@ public class PersonDAO {
             List<Person> results = query.getResultList();
             if (results.isEmpty())
                 return null;
-            return new PersonDTO(results.get(0));
+            return results.get(0);
         }
     }
 
     // Update
-    public PersonDTO updatePerson(Integer integer, PersonDTO personDTO) {
+    public Person updatePerson(Integer id, Person updatedData) {
         try (EntityManager em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            Person person = em.find(Person.class, integer);
-            person.setName(personDTO.getAuthor());
 
-            Person updated = em.merge(person);
+            em.getTransaction().begin();
+            // 1️⃣ Find eksisterende entity (managed)
+            Person existing = em.find(Person.class, id);
+            if (existing == null) {
+                em.getTransaction().rollback();
+                return null;
+            }
+            // 2️⃣ Opdater felter på den MANAGED entity
+            existing.setName(updatedData.getName());
+            // 3️⃣ merge er egentlig ikke engang nødvendigt fordi 'existing' ER managed
+            // men du kan bruge det for sikkerhed:
+            Person merged = em.merge(existing);
             em.getTransaction().commit();
-            return updated != null ? new PersonDTO(updated) : null;
+            return merged;
         }
     }
 
@@ -81,9 +87,9 @@ public class PersonDAO {
     }
 
     // Read all persons
-    public List<PersonDTO> getAllPersons() {
+    public List<Person> getAllPersons() {
             try (EntityManager em = emf.createEntityManager()) {
-                TypedQuery<PersonDTO> query = em.createQuery("SELECT p FROM Person p", PersonDTO.class);
+                TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p", Person.class);
                 return query.getResultList();
             }
         }

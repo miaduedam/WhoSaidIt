@@ -25,6 +25,7 @@ public class Person {
 
     // One person can have many quotes
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private Set<Quote> quotes = new HashSet<>();
 
     // Keep your convenience constructor
@@ -37,8 +38,10 @@ public class Person {
         quote.setPerson(this);
     }
 
-    public Person(PersonDTO personDTO) {
-        this.name = personDTO.getAuthor();
+    public Person(PersonDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getAuthor();
     }
+
 
 }
