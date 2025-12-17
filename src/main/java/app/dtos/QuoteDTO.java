@@ -15,7 +15,7 @@ public class QuoteDTO {
 
 public QuoteDTO(Quote quote){
     this.quote = quote.getText();
-    this.author = String.valueOf(quote.getPerson());
+    this.author = quote.getPerson().getName();
 
 }
 
