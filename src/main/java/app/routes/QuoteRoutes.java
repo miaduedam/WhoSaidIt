@@ -2,6 +2,7 @@ package app.routes;
 
 import app.controllers.QuoteController;
 import app.entities.Quote;
+import app.security.enums.Role;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -14,7 +15,7 @@ public class QuoteRoutes {
         return () -> {
 
             // GET /quotes
-            get("/", quoteController::readAll);
+            get("/", quoteController::readAll, Role.ADMIN);
 
             // GET /quotes/{id}
             get("/{id}", quoteController::read);
