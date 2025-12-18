@@ -1,5 +1,6 @@
 package app.routes;
 
+import app.controllers.QuoteAPIController;
 import app.controllers.QuoteController;
 import app.entities.Quote;
 import io.javalin.apibuilder.EndpointGroup;
