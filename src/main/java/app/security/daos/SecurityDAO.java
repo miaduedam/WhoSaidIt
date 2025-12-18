@@ -1,17 +1,22 @@
 package app.security.daos;
 
 
+
+
 import app.exceptions.ApiException;
-import app.exceptions.EntityNotFoundException;
 import app.exceptions.ValidationException;
-import app.security.entities.User;
 import app.security.entities.Role;
+import app.security.entities.User;
+
 import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityNotFoundException;
 
+import java.util.Set;
 import java.util.stream.Collectors;
+
 
 /**
  * Purpose: To handle security in the API
@@ -19,6 +24,7 @@ import java.util.stream.Collectors;
  */
 public class SecurityDAO implements ISecurityDAO {
 
+    private static ISecurityDAO instance;
     private static EntityManagerFactory emf;
 
     public SecurityDAO(EntityManagerFactory _emf) {
@@ -38,9 +44,7 @@ public class SecurityDAO implements ISecurityDAO {
             user.getRoles().size(); // force roles to be fetched from db
             if (!user.verifyPassword(password))
                 throw new ValidationException("Wrong password");
-            return new UserDTO(user.getUsername(), String.valueOf(user.getRoles().stream().map(r -> r.getRoleName()).collect(Collectors.toSet())));
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
+            return new UserDTO(user.getUsername(), user.getRoles().stream().map(r -> r.getRoleName()).collect(Collectors.toSet()));
         }
     }
 
@@ -82,8 +86,6 @@ public class SecurityDAO implements ISecurityDAO {
             //em.merge(user);
             em.getTransaction().commit();
             return user;
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 }

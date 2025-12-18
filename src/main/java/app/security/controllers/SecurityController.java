@@ -11,6 +11,7 @@ import app.utils.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nimbusds.jose.JOSEException;
+
 import dk.bugelhartmann.ITokenSecurity;
 import dk.bugelhartmann.TokenSecurity;
 import dk.bugelhartmann.UserDTO;
@@ -170,7 +171,7 @@ public class SecurityController implements ISecurityController {
                 throw new NotAuthorizedException(403, "Token is not valid");
             }
         } catch (ParseException | JOSEException | NotAuthorizedException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new ApiException(HttpStatus.UNAUTHORIZED.getCode(), "Unauthorized. Could not verify token");
         }
     }

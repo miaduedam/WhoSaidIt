@@ -9,14 +9,24 @@ POST {{url}}/auth/register
 Content-Type: application/json
 
 {
-  "username": "user",
-  "password": "test123"
+  "username": "esben",
+  "password": "1234"
+}
+
+###
+POST {{url}}/auth/login/
+
+{
+    "username": "mia",
+    "password": "1234"
 }
 
 > {%
     client.global.set("jwt_token", response.body.token);
     console.log("JWT Token:", client.global.get("jwt_token"));
 %}
+
+
 
 
 ### --- PERSON ENDPOINTS ---
