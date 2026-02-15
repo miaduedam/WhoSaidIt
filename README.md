@@ -1,6 +1,6 @@
 # WhoSaidIt Backend
 
-## 📌 Description
+## Description
 This project is the backend for the WhoSaidIt application, developed as part of my Computer Science (Datamatiker) studies.
 It provides a REST API for handling users, quotes, and game logic.
 
